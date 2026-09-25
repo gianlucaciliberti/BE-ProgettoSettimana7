@@ -7,6 +7,31 @@
   font-size: 1.9rem;
 }
 
+.hero-catalogo {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: 56px 32px;
+  margin-bottom: 32px;
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+  background:
+    linear-gradient(180deg, rgba(10, 10, 12, 0.35) 0%, rgba(10, 10, 12, 0.82) 100%),
+    url('../assets/sfondo-showroom.jpg') center 25% / cover no-repeat;
+}
+
+.hero-catalogo h1 {
+  margin: 0 0 8px;
+  font-size: 2.3rem;
+  color: #fff;
+}
+
+.hero-catalogo p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.05rem;
+}
+
 .pagina-sottotitolo {
   color: var(--text-muted);
   margin: 0;

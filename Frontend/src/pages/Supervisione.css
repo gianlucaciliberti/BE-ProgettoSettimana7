@@ -1,0 +1,104 @@
+.riquadro-supervisione {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.riquadro-supervisione h2 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+.tabella-utenti {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.tabella-utenti th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabella-utenti td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabella-utenti__azioni button {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+}
+
+.tabella-utenti__azioni button:hover {
+  border-color: var(--accent);
+}
+
+.badge-ruolo-tabella {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.badge-ruolo-tabella--admin {
+  background: var(--accent-bg);
+  color: var(--accent-dark);
+}
+
+.badge-ruolo-tabella--superadmin {
+  background: var(--ink);
+  color: #fff;
+}
+
+.riepilogo-admin {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.riepilogo-admin:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.riepilogo-admin__nome {
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.riepilogo-admin__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.etichetta-stato {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.etichetta-stato--pubblicata {
+  background: var(--success-bg);
+  color: var(--success);
+}

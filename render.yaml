@@ -21,9 +21,28 @@ services:
         sync: false
       - key: MAIL_PASSWORD
         sync: false
-      # URL esatto del frontend deployato (aggiornabile in seguito).
+      # URL esatto del frontend deployato: si scopre solo dopo il primo
+      # deploy del frontend, va incollato qui a mano e si ri-deploya.
       - key: ALLOWED_ORIGIN
         sync: false
+
+  - type: web
+    name: salone-auto-frontend
+    env: static
+    buildCommand: cd Frontend && npm install && npm run build
+    staticPublishPath: Frontend/dist
+    envVars:
+      # URL del backend: si scopre dopo il suo primo deploy (di solito
+      # https://salone-auto-backend.onrender.com, ma va verificato).
+      # Serve in fase di build (Vite lo "cuoce" dentro il bundle), quindi
+      # se cambia bisogna ri-buildare, non basta riavviare.
+      - key: VITE_API_URL
+        sync: false
+    routes:
+      # SPA con react-router: ogni percorso serve index.html, decide poi il router.
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
 databases:
   - name: salone-auto-db

@@ -37,10 +37,10 @@ export function Catalogo() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="pagina-intestazione"
+        className="hero-catalogo"
       >
-        <h1>Il catalogo</h1>
-        <p className="pagina-sottotitolo">Le auto disponibili in questo momento.</p>
+        <h1>Trova la tua prossima auto</h1>
+        <p>Le auto disponibili in questo momento nel nostro salone.</p>
       </motion.div>
 
       {errore && <p className="form__errore">{errore}</p>}
