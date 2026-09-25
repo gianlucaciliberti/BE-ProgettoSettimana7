@@ -21,4 +21,10 @@ public interface PreferitoRepository extends JpaRepository<Preferito, Long> {
     Optional<Preferito> findByUtenteIdAndAutoId(Long utenteId, Long autoId);
 
     boolean existsByUtenteIdAndAutoId(Long utenteId, Long autoId);
+
+    /** Cascata manuale per "elimina il mio account": niente preferiti orfani. */
+    void deleteByUtenteId(Long utenteId);
+
+    /** Cascata manuale per l'eliminazione di un'auto da parte di un admin. */
+    void deleteByAutoId(Long autoId);
 }

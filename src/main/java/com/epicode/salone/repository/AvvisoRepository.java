@@ -15,13 +15,21 @@ public interface AvvisoRepository extends JpaRepository<Avviso, Long> {
     /** Id + proprietario insieme: stesso motivo di PreferitoRepository. */
     Optional<Avviso> findByIdAndPreferitoUtenteId(Long id, Long utenteId);
 
-    Optional<Avviso> findByPreferitoId(Long preferitoId);
+    /** Un preferito può avere più avvisi (soglie diverse) contemporaneamente. */
+    List<Avviso> findByPreferitoId(Long preferitoId);
 
     /** Link di disattivazione nella mail: si cerca per token, mai per id. */
     Optional<Avviso> findByToken(String token);
 
-    /** Tutti gli avvisi (di qualunque utente) legati a una data auto, per capire chi avvisare quando cambia il prezzo. */
-    List<Avviso> findByPreferitoAutoId(Long autoId);
+    /**
+     * Avvisi non ancora inviati per una data auto, con utente e auto già
+     * caricati: il listener che li usa gira in un thread @Async dopo il
+     * commit, quando il contesto di persistenza originale non c'è più, quindi
+     * niente lazy-loading su preferito/utente/auto.
+     */
+    @Query("SELECT a FROM Avviso a JOIN FETCH a.preferito p JOIN FETCH p.utente JOIN FETCH p.auto "
+            + "WHERE p.auto.id = :autoId AND a.inviato = false")
+    List<Avviso> findNonInviatiByAutoIdConDettagli(@Param("autoId") Long autoId);
 
     /**
      * Marca l'avviso come inviato solo se non lo era già, in un'unica
@@ -31,4 +39,13 @@ public interface AvvisoRepository extends JpaRepository<Avviso, Long> {
     @Modifying
     @Query("UPDATE Avviso a SET a.inviato = true WHERE a.id = :id AND a.inviato = false")
     int marcaInviatoSeNonGiaFatto(@Param("id") Long id);
+
+    /** Cascata manuale per "elimina il mio account". */
+    void deleteByPreferitoUtenteId(Long utenteId);
+
+    /** Cascata manuale per l'eliminazione di un'auto da parte di un admin. */
+    void deleteByPreferitoAutoId(Long autoId);
+
+    /** Cascata manuale per la rimozione di un preferito (tutti i suoi avvisi, quanti siano). */
+    void deleteByPreferitoId(Long preferitoId);
 }

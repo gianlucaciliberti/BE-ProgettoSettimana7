@@ -12,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -21,11 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Soglia di prezzo fissata su un {@link Preferito}: al massimo un avviso per
- * preferito (relazione uno a uno). {@code inviato} indica che la mail per
- * l'attuale attraversamento di soglia è già partita, per non mandarne due.
- * {@code token} è il valore casuale e monouso usato nel link della mail per
- * disattivare l'avviso: mai l'id, per non farlo indovinare/enumerare.
+ * Soglia di prezzo fissata su un {@link Preferito}. Un preferito può avere
+ * più avvisi contemporaneamente (soglie diverse), ognuno indipendente e
+ * "one-time": una volta che {@code inviato} diventa true resta così per
+ * sempre, anche se il prezzo risale e riscende sotto quella stessa soglia.
+ * Per un'altra mail serve un nuovo avviso con una nuova soglia, non il
+ * reset di uno esistente. {@code token} è il valore casuale e monouso usato
+ * nel link della mail per disattivare l'avviso: mai l'id.
  */
 @Entity
 @Table(name = "avvisi")
@@ -40,8 +42,8 @@ public class Avviso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "preferito_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "preferito_id", nullable = false)
     private Preferito preferito;
 
     @Column(nullable = false, precision = 10, scale = 2)
