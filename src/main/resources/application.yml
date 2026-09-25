@@ -2,10 +2,13 @@ spring:
   application:
     name: salone-auto
 
+  # In locale usa questi default. Su Render, DatabaseUrl.java legge la
+  # DATABASE_URL che Render fornisce (formato postgres://utente:pass@host/db)
+  # e sovrascrive url/username/password con priorità più alta di questo file.
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/salone_auto}
-    username: ${DATABASE_USERNAME:salone}
-    password: ${DATABASE_PASSWORD:salone}
+    url: jdbc:postgresql://localhost:5432/salone_auto
+    username: salone
+    password: salone
 
   jpa:
     hibernate:

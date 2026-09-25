@@ -69,6 +69,7 @@ public class DataSeeder implements ApplicationRunner {
         amministratore.setCognome("Sistema");
         amministratore.setRuolo(ruoloSuperAdmin);
         utenteRepository.save(amministratore);
-        log.info("Account SUPERADMIN creato: {}", adminEmail);
+        // Niente indirizzi email nei log: l'account è quello di ADMIN_EMAIL, che sta solo in configurazione.
+        log.info("Account SUPERADMIN creato all'avvio");
     }
 }

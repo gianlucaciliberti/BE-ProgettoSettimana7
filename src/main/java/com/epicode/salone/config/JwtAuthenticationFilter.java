@@ -8,7 +8,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.epicode.salone.entity.Utente;
@@ -29,8 +28,13 @@ import lombok.RequiredArgsConstructor;
  * {@code @AuthenticationPrincipal Utente utente}, senza un'altra query.
  * Token assente o non valido: nessuna Authentication, si prosegue anonimi
  * (le regole di autorizzazione decidono poi se la richiesta può passare).
+ * <p>
+ * Niente {@code @Component}: Spring Boot registrerebbe automaticamente
+ * ogni bean Filter anche come filtro servlet globale (url-pattern "/*"),
+ * in aggiunta a quello nella catena di Spring Security aggiunto con
+ * addFilterBefore in {@link SecurityConfig}. È SecurityConfig a costruirlo
+ * esplicitamente, così esiste una sola istanza, nel posto giusto.
  */
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
