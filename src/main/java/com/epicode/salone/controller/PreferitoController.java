@@ -50,6 +50,12 @@ public class PreferitoController {
         return ResponseEntity.noContent().build();
     }
 
+    /** Per la pagina di dettaglio auto: l'utente loggato ce l'ha già nei preferiti? */
+    @GetMapping("/per-auto/{autoId}")
+    public PreferitoDTO.Risposta perAuto(@PathVariable Long autoId, @AuthenticationPrincipal Utente utente) {
+        return preferitoService.trovaPerAuto(utente.getId(), autoId);
+    }
+
     @GetMapping("/{id}/avvisi")
     public List<AvvisoDTO.Risposta> listaAvvisi(@PathVariable Long id, @AuthenticationPrincipal Utente utente) {
         return preferitoService.listaAvvisi(utente.getId(), id);

@@ -1,11 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
-import { RottaAdmin, RottaAutenticata } from './components/RottaProtetta.jsx';
+import { RottaAdmin, RottaAutenticata, RottaSuperAdmin } from './components/RottaProtetta.jsx';
 import { AdminAutoForm, AdminAutoLista } from './pages/AdminAuto.jsx';
 import { Preferiti, Profilo } from './pages/AreaUtente.jsx';
 import { Login, Registrazione } from './pages/Autenticazione.jsx';
 import { Catalogo, DettaglioAuto } from './pages/Catalogo.jsx';
 import { CookiePolicy, PrivacyPolicy } from './pages/Policy.jsx';
+import Supervisione from './pages/Supervisione.jsx';
 import './App.css';
 
 export default function App() {
@@ -60,6 +61,14 @@ export default function App() {
               <RottaAdmin>
                 <AdminAutoForm />
               </RottaAdmin>
+            }
+          />
+          <Route
+            path="/admin/supervisione"
+            element={
+              <RottaSuperAdmin>
+                <Supervisione />
+              </RottaSuperAdmin>
             }
           />
         </Routes>

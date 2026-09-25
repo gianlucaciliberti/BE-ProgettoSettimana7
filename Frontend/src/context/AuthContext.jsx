@@ -50,6 +50,7 @@ export function AuthProvider({ children }) {
       caricamento,
       autenticato: Boolean(token),
       isAdmin: utente?.ruolo === 'ADMIN' || utente?.ruolo === 'SUPERADMIN',
+      isSuperAdmin: utente?.ruolo === 'SUPERADMIN',
       login,
       registrazione,
       logout,

@@ -1,5 +1,7 @@
 package com.epicode.salone.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,34 @@ public class UtenteService {
         avvisoRepository.deleteByPreferitoUtenteId(utenteId);
         preferitoRepository.deleteByUtenteId(utenteId);
         utenteRepository.deleteById(utenteId);
+    }
+
+    /** Solo per il pannello SUPERADMIN: tutti gli utenti, per supervisionare chi è cosa. */
+    @Transactional(readOnly = true)
+    public List<UtenteDTO.Profilo> listaTutti() {
+        return utenteRepository.findAll().stream()
+                .map(UtenteDTO.Profilo::da)
+                .toList();
+    }
+
+    /**
+     * Promuove un USER ad ADMIN o riporta un ADMIN a USER. Il SUPERADMIN
+     * stesso non si tocca da qui: è unico e fittizio, non passa da questo
+     * endpoint né in entrata né in uscita.
+     */
+    @Transactional
+    public UtenteDTO.Profilo cambiaRuolo(Long utenteId, Ruolo.Nome nuovoRuolo) {
+        if (nuovoRuolo == Ruolo.Nome.SUPERADMIN) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SUPERADMIN non si assegna da qui");
+        }
+        Utente utente = trova(utenteId);
+        if (utente.getRuolo().getNome() == Ruolo.Nome.SUPERADMIN) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Il SUPERADMIN non si può modificare");
+        }
+        Ruolo ruolo = ruoloRepository.findByNome(nuovoRuolo)
+                .orElseThrow(() -> new IllegalStateException("Ruolo " + nuovoRuolo + " non seminato"));
+        utente.setRuolo(ruolo);
+        return UtenteDTO.Profilo.da(utente);
     }
 
     private Utente trova(Long id) {

@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/registrazione", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/avvisi/disattiva").permitAll()
+                        .requestMatchers("/api/auth/utenti/**").hasRole("SUPERADMIN")
                         // Le rotte /api/auto/admin/** devono precedere quelle pubbliche sotto,
                         // altrimenti "/api/auto/*" le intercetterebbe per prima.
                         .requestMatchers(HttpMethod.GET, "/api/auto/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")

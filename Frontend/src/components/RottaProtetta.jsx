@@ -18,3 +18,11 @@ export function RottaAdmin({ children }) {
   if (!autenticato) return <Navigate to="/login" replace />;
   return isAdmin ? children : <Navigate to="/" replace />;
 }
+
+/** Solo il SUPERADMIN: pannello di supervisione. */
+export function RottaSuperAdmin({ children }) {
+  const { autenticato, isSuperAdmin, caricamento } = useAuth();
+  if (caricamento) return null;
+  if (!autenticato) return <Navigate to="/login" replace />;
+  return isSuperAdmin ? children : <Navigate to="/" replace />;
+}

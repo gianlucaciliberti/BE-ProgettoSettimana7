@@ -57,6 +57,10 @@ export const api = {
   aggiornaProfilo: (dati) => request('/api/auth/profilo', { method: 'PUT', body: dati }),
   eliminaAccount: () => request('/api/auth/profilo', { method: 'DELETE' }),
 
+  // Supervisione utenti (solo SUPERADMIN)
+  utentiLista: () => request('/api/auth/utenti'),
+  utenteCambiaRuolo: (id, ruolo) => request(`/api/auth/utenti/${id}/ruolo`, { method: 'PATCH', body: { ruolo } }),
+
   // Catalogo auto
   catalogo: (query) => request('/api/auto', { query }),
   autoDettaglio: (id) => request(`/api/auto/${id}`),
@@ -73,6 +77,8 @@ export const api = {
   preferitiLista: () => request('/api/preferiti'),
   preferitoAggiungi: (autoId) => request('/api/preferiti', { method: 'POST', body: { autoId } }),
   preferitoRimuovi: (id) => request(`/api/preferiti/${id}`, { method: 'DELETE' }),
+  /** 404 (ApiError) se l'auto non è (ancora) tra i preferiti dell'utente loggato. */
+  preferitoPerAuto: (autoId) => request(`/api/preferiti/per-auto/${autoId}`),
   avvisiLista: (preferitoId) => request(`/api/preferiti/${preferitoId}/avvisi`),
   avvisoCrea: (preferitoId, sogliaPrezzo) =>
     request(`/api/preferiti/${preferitoId}/avvisi`, { method: 'POST', body: { sogliaPrezzo } }),

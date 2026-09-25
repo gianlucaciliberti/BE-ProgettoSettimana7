@@ -58,6 +58,18 @@ public class PreferitoService {
         return mappa(preferito);
     }
 
+    /**
+     * Per la pagina di dettaglio auto: sapere se l'utente loggato l'ha già
+     * nei preferiti (e con quali soglie), senza dover scaricare tutta la
+     * lista e cercarla lato client.
+     */
+    @Transactional(readOnly = true)
+    public PreferitoDTO.Risposta trovaPerAuto(Long utenteId, Long autoId) {
+        Preferito preferito = preferitoRepository.findByUtenteIdAndAutoId(utenteId, autoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return mappa(preferito);
+    }
+
     @Transactional
     public void rimuovi(Long utenteId, Long preferitoId) {
         Preferito preferito = preferitoRepository.findByIdAndUtenteId(preferitoId, utenteId)

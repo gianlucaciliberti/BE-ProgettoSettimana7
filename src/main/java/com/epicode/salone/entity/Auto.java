@@ -2,11 +2,15 @@ package com.epicode.salone.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,8 +19,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -49,8 +53,9 @@ public class Auto {
     @Column(nullable = false)
     private String modello;
 
-    @Lob
-    @Column(nullable = false)
+    // Niente @Lob: su Postgres mapperebbe su oid (large object) invece che
+    // su testo normale, inutilmente complesso per una descrizione.
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String descrizione;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -67,6 +72,13 @@ public class Auto {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creato_da", nullable = false)
     private Utente creatoDa;
+
+    /** URL delle foto, in ordine: la prima è la copertina mostrata nelle card. */
+    @ElementCollection
+    @CollectionTable(name = "auto_foto", joinColumns = @JoinColumn(name = "auto_id"))
+    @OrderColumn(name = "posizione")
+    @Column(name = "url", nullable = false, length = 1000)
+    private List<String> foto = new ArrayList<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

@@ -91,6 +91,9 @@ public class AutoService {
         auto.setPrezzoAcquisto(request.getPrezzoAcquisto());
         auto.setStato(Auto.Stato.BOZZA);
         auto.setCreatoDa(admin);
+        if (request.getFoto() != null) {
+            auto.getFoto().addAll(request.getFoto());
+        }
         autoRepository.save(auto);
         return AutoDTO.Admin.da(auto);
     }
@@ -106,6 +109,10 @@ public class AutoService {
         auto.setPrezzoVendita(request.getPrezzoVendita());
         auto.setPrezzoAcquisto(request.getPrezzoAcquisto());
         auto.setStato(request.getStato());
+        if (request.getFoto() != null) {
+            auto.getFoto().clear();
+            auto.getFoto().addAll(request.getFoto());
+        }
         autoRepository.save(auto);
 
         pubblicaEventoSePrezzoCambiato(auto, prezzoPrecedente, request.getPrezzoVendita());

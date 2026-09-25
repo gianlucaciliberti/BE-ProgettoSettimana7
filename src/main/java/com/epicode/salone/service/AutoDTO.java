@@ -2,6 +2,8 @@ package com.epicode.salone.service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.epicode.salone.entity.Auto;
 
@@ -30,6 +32,7 @@ public class AutoDTO {
         private String modello;
         private String descrizione;
         private BigDecimal prezzoVendita;
+        private List<String> foto;
 
         public static Pubblico da(Auto auto) {
             Pubblico dto = new Pubblico();
@@ -38,6 +41,7 @@ public class AutoDTO {
             dto.setModello(auto.getModello());
             dto.setDescrizione(auto.getDescrizione());
             dto.setPrezzoVendita(auto.getPrezzoVendita());
+            dto.setFoto(new ArrayList<>(auto.getFoto()));  // materializza mentre la sessione Hibernate e ancora aperta
             return dto;
         }
     }
@@ -59,6 +63,7 @@ public class AutoDTO {
         private Long creatoDaId;
         private Instant createdAt;
         private Instant updatedAt;
+        private List<String> foto;
 
         public static Admin da(Auto auto) {
             Admin dto = new Admin();
@@ -72,6 +77,7 @@ public class AutoDTO {
             dto.setCreatoDaId(auto.getCreatoDa().getId());
             dto.setCreatedAt(auto.getCreatedAt());
             dto.setUpdatedAt(auto.getUpdatedAt());
+            dto.setFoto(new ArrayList<>(auto.getFoto()));  // materializza mentre la sessione Hibernate e ancora aperta
             return dto;
         }
     }
@@ -99,6 +105,9 @@ public class AutoDTO {
         @NotNull
         @Positive
         private BigDecimal prezzoAcquisto;
+
+        /** URL delle foto, in ordine (la prima è la copertina). Facoltative. */
+        private List<String> foto;
     }
 
     /**
@@ -132,6 +141,9 @@ public class AutoDTO {
 
         @NotNull
         private Auto.Stato stato;
+
+        /** URL delle foto, in ordine (la prima è la copertina). Facoltative. */
+        private List<String> foto;
     }
 
     /** Solo il cambio di prezzo di vendita: l'azione che genera l'evento verificato dagli Avvisi. */

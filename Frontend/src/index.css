@@ -1,15 +1,23 @@
 :root {
-  --text: #2b2b33;
-  --text-muted: #6b6375;
-  --bg: #ffffff;
-  --bg-alt: #f6f5f8;
-  --border: #e5e4e7;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
+  --text: #1c1d22;
+  --text-muted: #6b6f7b;
+  --bg: #f7f7f9;
+  --bg-alt: #ffffff;
+  --border: #e6e5ea;
+  --accent: #d97706;
+  --accent-dark: #b45309;
+  --accent-bg: rgba(217, 119, 6, 0.1);
+  --ink: #14151a;
   --danger: #d92d20;
+  --danger-bg: rgba(217, 45, 32, 0.08);
   --success: #12805c;
+  --success-bg: rgba(18, 128, 92, 0.1);
+  --radius: 14px;
+  --shadow-sm: 0 1px 2px rgba(20, 21, 26, 0.06);
+  --shadow-md: 0 8px 24px rgba(20, 21, 26, 0.08);
+  --shadow-lg: 0 16px 40px rgba(20, 21, 26, 0.14);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: 'Segoe UI', system-ui, Roboto, sans-serif;
 
   color-scheme: light;
   font: 16px/1.5 var(--sans);
@@ -25,8 +33,12 @@ body {
   margin: 0;
 }
 
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+}
+
 a {
-  color: var(--accent);
+  color: var(--accent-dark);
 }
 
 button {
@@ -38,4 +50,8 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+::selection {
+  background: var(--accent-bg);
 }

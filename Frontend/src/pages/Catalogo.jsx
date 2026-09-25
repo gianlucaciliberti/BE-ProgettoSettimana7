@@ -1,43 +1,22 @@
+import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError } from '../api/api.js';
 import { useAuth, useRichiediAccesso } from '../context/AuthContext.jsx';
 import './pages.css';
 
-const CAMPI_ORDINAMENTO = [
-  { valore: 'id', etichetta: 'Più recenti' },
-  { valore: 'prezzoVendita', etichetta: 'Prezzo' },
-  { valore: 'marca', etichetta: 'Marca' },
-  { valore: 'modello', etichetta: 'Modello' },
-];
+const PLACEHOLDER = 'https://picsum.photos/seed/salone-auto-placeholder/900/600';
 
 export function Catalogo() {
-  const [ricercaInput, setRicercaInput] = useState('');
-  const [ricerca, setRicerca] = useState('');
-  const [ordinaPer, setOrdinaPer] = useState('id');
-  const [direzione, setDirezione] = useState('asc');
-  const [pagina, setPagina] = useState(0);
-
   const [risultati, setRisultati] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState('');
 
-  // Debounce: si cerca 300ms dopo che l'utente ha smesso di scrivere, non a ogni tasto.
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPagina(0);
-      setRicerca(ricercaInput);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [ricercaInput]);
-
+  // Poche auto: niente ricerca/paginazione, il catalogo intero compare da solo.
   useEffect(() => {
     let annullato = false;
-    setCaricamento(true);
-    setErrore('');
-
     api
-      .catalogo({ ricerca, ordinaPer, direzione, pagina, dimensione: 12 })
+      .catalogo({ dimensione: 100 })
       .then((datiPagina) => {
         if (!annullato) setRisultati(datiPagina);
       })
@@ -47,74 +26,45 @@ export function Catalogo() {
       .finally(() => {
         if (!annullato) setCaricamento(false);
       });
-
     return () => {
       annullato = true;
     };
-  }, [ricerca, ordinaPer, direzione, pagina]);
+  }, []);
 
   return (
     <div>
-      <h1>Catalogo</h1>
-
-      <div className="filtri">
-        <input
-          type="search"
-          placeholder="Cerca per marca, modello o descrizione…"
-          value={ricercaInput}
-          onChange={(evento) => setRicercaInput(evento.target.value)}
-        />
-        <select value={ordinaPer} onChange={(evento) => setOrdinaPer(evento.target.value)}>
-          {CAMPI_ORDINAMENTO.map((campo) => (
-            <option key={campo.valore} value={campo.valore}>
-              {campo.etichetta}
-            </option>
-          ))}
-        </select>
-        <select value={direzione} onChange={(evento) => setDirezione(evento.target.value)}>
-          <option value="asc">Crescente</option>
-          <option value="desc">Decrescente</option>
-        </select>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="pagina-intestazione"
+      >
+        <h1>Il catalogo</h1>
+        <p className="pagina-sottotitolo">Le auto disponibili in questo momento.</p>
+      </motion.div>
 
       {errore && <p className="form__errore">{errore}</p>}
-      {caricamento && <p>Caricamento…</p>}
-
-      {!caricamento && risultati && risultati.content.length === 0 && <p>Nessuna auto trovata.</p>}
+      {caricamento && <p className="testo-muto">Caricamento…</p>}
+      {!caricamento && risultati?.content.length === 0 && (
+        <p className="testo-muto">Nessuna auto pubblicata al momento.</p>
+      )}
 
       <div className="griglia-auto">
-        {risultati?.content.map((auto) => (
-          <AutoCard key={auto.id} auto={auto} />
+        {risultati?.content.map((auto, indice) => (
+          <AutoCard key={auto.id} auto={auto} indice={indice} />
         ))}
       </div>
-
-      {risultati && risultati.totalPages > 1 && (
-        <div className="paginazione">
-          <button type="button" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}>
-            ← Precedente
-          </button>
-          <span>
-            Pagina {pagina + 1} di {risultati.totalPages}
-          </span>
-          <button
-            type="button"
-            disabled={pagina + 1 >= risultati.totalPages}
-            onClick={() => setPagina((p) => p + 1)}
-          >
-            Successiva →
-          </button>
-        </div>
-      )}
     </div>
   );
 }
 
-function AutoCard({ auto }) {
+function AutoCard({ auto, indice }) {
   const { autenticato } = useAuth();
   const richiediAccesso = useRichiediAccesso();
   const [stato, setStato] = useState('inattivo'); // inattivo | salvando | salvato | errore
 
-  async function aggiungiPreferiti() {
+  async function aggiungiPreferiti(evento) {
+    evento.preventDefault();
     if (!autenticato) {
       richiediAccesso("Devi accedere all'account per aggiungere questa auto ai preferiti.");
       return;
@@ -124,26 +74,42 @@ function AutoCard({ auto }) {
       await api.preferitoAggiungi(auto.id);
       setStato('salvato');
     } catch (err) {
-      // Già nei preferiti: per l'utente è comunque il risultato che voleva.
       setStato(err instanceof ApiError && err.status === 409 ? 'salvato' : 'errore');
     }
   }
 
   return (
-    <article className="auto-card">
-      <h3>
-        {auto.marca} {auto.modello}
-      </h3>
-      <p className="auto-card__descrizione">{auto.descrizione}</p>
-      <p className="auto-card__prezzo">€{auto.prezzoVendita}</p>
+    <motion.article
+      className="auto-card"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: Math.min(indice * 0.05, 0.3) }}
+      whileHover={{ y: -4 }}
+    >
+      <Link to={`/auto/${auto.id}`} className="auto-card__link">
+        <div className="auto-card__foto">
+          <img src={auto.foto?.[0] || PLACEHOLDER} alt={`${auto.marca} ${auto.modello}`} loading="lazy" />
+          <span className="auto-card__prezzo-tag">€{Number(auto.prezzoVendita).toLocaleString('it-IT')}</span>
+        </div>
+        <div className="auto-card__corpo">
+          <h3>
+            {auto.marca} {auto.modello}
+          </h3>
+          <p className="auto-card__descrizione">{auto.descrizione}</p>
+        </div>
+      </Link>
       <div className="auto-card__azioni">
-        <Link to={`/auto/${auto.id}`}>Dettagli</Link>
-        <button type="button" disabled={stato === 'salvando' || stato === 'salvato'} onClick={aggiungiPreferiti}>
-          {stato === 'salvato' ? 'Nei preferiti ✓' : 'Aggiungi ai preferiti'}
-        </button>
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.96 }}
+          disabled={stato === 'salvando' || stato === 'salvato'}
+          onClick={aggiungiPreferiti}
+          className={stato === 'salvato' ? 'bottone-preferito bottone-preferito--attivo' : 'bottone-preferito'}
+        >
+          {stato === 'salvato' ? '♥ Nei preferiti' : '♡ Aggiungi ai preferiti'}
+        </motion.button>
       </div>
-      {stato === 'errore' && <p className="form__errore">Non è stato possibile salvarla, riprova.</p>}
-    </article>
+    </motion.article>
   );
 }
 
@@ -156,12 +122,19 @@ export function DettaglioAuto() {
   const [auto, setAuto] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
   const [errore, setErrore] = useState('');
+  const [fotoAttiva, setFotoAttiva] = useState(0);
+
+  const [preferito, setPreferito] = useState(null); // null = non caricato/non presente
   const [statoPreferito, setStatoPreferito] = useState('inattivo');
+  const [nuovaSoglia, setNuovaSoglia] = useState('');
+  const [statoSoglia, setStatoSoglia] = useState('inattivo');
+  const [erroreSoglia, setErroreSoglia] = useState('');
 
   useEffect(() => {
     let annullato = false;
     setCaricamento(true);
     setErrore('');
+    setFotoAttiva(0);
 
     api
       .autoDettaglio(id)
@@ -182,6 +155,22 @@ export function DettaglioAuto() {
     };
   }, [id]);
 
+  useEffect(() => {
+    if (!autenticato) return;
+    let annullato = false;
+    api
+      .preferitoPerAuto(id)
+      .then((dati) => {
+        if (!annullato) setPreferito(dati);
+      })
+      .catch(() => {
+        // 404: non è (ancora) nei preferiti, resta null.
+      });
+    return () => {
+      annullato = true;
+    };
+  }, [id, autenticato]);
+
   async function aggiungiPreferiti() {
     if (!autenticato) {
       richiediAccesso("Devi accedere all'account per aggiungere questa auto ai preferiti.");
@@ -189,37 +178,146 @@ export function DettaglioAuto() {
     }
     setStatoPreferito('salvando');
     try {
-      await api.preferitoAggiungi(auto.id);
-      setStatoPreferito('salvato');
+      const nuovo = await api.preferitoAggiungi(auto.id);
+      setPreferito(nuovo);
     } catch (err) {
-      setStatoPreferito(err instanceof ApiError && err.status === 409 ? 'salvato' : 'errore');
+      if (err instanceof ApiError && err.status === 409) {
+        // Già nei preferiti ma non l'avevamo ancora ricaricato: recupera lo stato vero.
+        try {
+          setPreferito(await api.preferitoPerAuto(auto.id));
+        } catch {
+          /* ignorato */
+        }
+      } else {
+        setStatoPreferito('errore');
+      }
+    } finally {
+      setStatoPreferito('inattivo');
     }
   }
 
-  if (caricamento) return <p>Caricamento…</p>;
+  async function creaSoglia(evento) {
+    evento.preventDefault();
+    setErroreSoglia('');
+    const valore = Number(nuovaSoglia);
+    if (!valore || valore <= 0) {
+      setErroreSoglia('Inserisci un prezzo valido.');
+      return;
+    }
+    setStatoSoglia('salvando');
+    try {
+      const avviso = await api.avvisoCrea(preferito.id, valore);
+      setPreferito((precedente) => ({ ...precedente, avvisi: [...precedente.avvisi, avviso] }));
+      setNuovaSoglia('');
+    } catch (err) {
+      setErroreSoglia(err instanceof ApiError ? err.message : 'Non è stato possibile salvare la soglia.');
+    } finally {
+      setStatoSoglia('inattivo');
+    }
+  }
+
+  if (caricamento) return <p className="testo-muto">Caricamento…</p>;
   if (errore) return <p className="form__errore">{errore}</p>;
   if (!auto) return null;
 
+  const foto = auto.foto?.length ? auto.foto : [PLACEHOLDER];
+
   return (
-    <div className="dettaglio-auto">
+    <motion.div
+      className="dettaglio-auto"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+    >
       <button type="button" className="link-indietro" onClick={() => navigate(-1)}>
         ← Torna indietro
       </button>
 
-      <h1>
-        {auto.marca} {auto.modello}
-      </h1>
-      <p className="dettaglio-auto__prezzo">€{auto.prezzoVendita}</p>
-      <p>{auto.descrizione}</p>
+      <div className="dettaglio-auto__layout">
+        <div className="dettaglio-auto__galleria">
+          <motion.img
+            key={foto[fotoAttiva]}
+            src={foto[fotoAttiva]}
+            alt={`${auto.marca} ${auto.modello}`}
+            className="dettaglio-auto__foto-principale"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+          />
+          {foto.length > 1 && (
+            <div className="dettaglio-auto__miniature">
+              {foto.map((url, indice) => (
+                <button
+                  type="button"
+                  key={url}
+                  className={indice === fotoAttiva ? 'miniatura miniatura--attiva' : 'miniatura'}
+                  onClick={() => setFotoAttiva(indice)}
+                >
+                  <img src={url} alt="" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-      <button
-        type="button"
-        disabled={statoPreferito === 'salvando' || statoPreferito === 'salvato'}
-        onClick={aggiungiPreferiti}
-      >
-        {statoPreferito === 'salvato' ? 'Nei preferiti ✓' : 'Aggiungi ai preferiti'}
-      </button>
-      {statoPreferito === 'errore' && <p className="form__errore">Non è stato possibile salvarla, riprova.</p>}
-    </div>
+        <div className="dettaglio-auto__info">
+          <h1>
+            {auto.marca} {auto.modello}
+          </h1>
+          <p className="dettaglio-auto__prezzo">€{Number(auto.prezzoVendita).toLocaleString('it-IT')}</p>
+          <p>{auto.descrizione}</p>
+
+          {!preferito ? (
+            <motion.button
+              type="button"
+              whileTap={{ scale: 0.97 }}
+              disabled={statoPreferito === 'salvando'}
+              onClick={aggiungiPreferiti}
+              className="bottone-primario"
+            >
+              {statoPreferito === 'salvando' ? 'Aggiungo…' : '♡ Aggiungi ai preferiti'}
+            </motion.button>
+          ) : (
+            <div className="riquadro-soglie">
+              <p className="riquadro-soglie__titolo">♥ Nei tuoi preferiti</p>
+
+              {preferito.avvisi.length > 0 && (
+                <ul className="lista-soglie">
+                  {preferito.avvisi.map((avviso) => (
+                    <li key={avviso.id} className={avviso.inviato ? 'soglia soglia--scattata' : 'soglia'}>
+                      Avvisami sotto €{Number(avviso.sogliaPrezzo).toLocaleString('it-IT')}
+                      {avviso.inviato && <span className="soglia__etichetta">già inviato</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <form className="form-soglia" onSubmit={creaSoglia}>
+                <label>
+                  Nuova soglia di prezzo
+                  <input
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    placeholder="es. 20000"
+                    value={nuovaSoglia}
+                    onChange={(evento) => setNuovaSoglia(evento.target.value)}
+                  />
+                </label>
+                <button type="submit" disabled={statoSoglia === 'salvando'}>
+                  {statoSoglia === 'salvando' ? 'Salvo…' : 'Aggiungi soglia'}
+                </button>
+              </form>
+              {erroreSoglia && <p className="form__errore">{erroreSoglia}</p>}
+              <p className="testo-muto testo-piccolo">
+                Ogni soglia manda al massimo una mail: quando il prezzo la attraversa scatta e basta, per un'altra
+                notifica serve una nuova soglia.
+              </p>
+            </div>
+          )}
+          {statoPreferito === 'errore' && <p className="form__errore">Non è stato possibile salvare, riprova.</p>}
+        </div>
+      </div>
+    </motion.div>
   );
 }

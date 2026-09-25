@@ -2,9 +2,11 @@ package com.epicode.salone.service;
 
 import java.time.Instant;
 
+import com.epicode.salone.entity.Ruolo;
 import com.epicode.salone.entity.Utente;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,5 +54,20 @@ public class UtenteDTO {
 
         @NotBlank
         private String cognome;
+    }
+
+    /**
+     * Solo il SUPERADMIN la usa, per promuovere un USER ad ADMIN o riportarlo
+     * USER. Non permette di assegnare/togliere SUPERADMIN: quell'account è
+     * unico e fittizio, creato solo dal seed all'avvio.
+     */
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CambiaRuolo {
+
+        @NotNull
+        private Ruolo.Nome ruolo;
     }
 }
