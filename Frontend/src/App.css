@@ -10,6 +10,11 @@
   max-width: 1080px;
   margin: 0 auto;
   padding: 32px 20px 64px;
+  /* Velo chiaro sul contenuto normale di ogni pagina (form, card, ecc.):
+     l'immagine di sfondo del body resta piena solo dove qualcosa esce
+     apposta da questo contenitore, come l'hero del catalogo. */
+  background: rgba(247, 247, 249, 0.95);
+  position: relative;
 }
 
 .navbar {
@@ -17,9 +22,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 28px;
-  background:
-    linear-gradient(100deg, rgba(10, 10, 12, 0.94) 0%, rgba(10, 10, 12, 0.8) 60%, rgba(10, 10, 12, 0.55) 100%),
-    url('./assets/sfondo-showroom.jpg') center 30% / cover no-repeat;
+  /* Traslucida: lascia intravedere lo sfondo comune del sito sotto, invece
+     di portarsi dietro una sua copia dell'immagine. */
+  background: rgba(10, 10, 12, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: #fff;
   position: sticky;
   top: 0;

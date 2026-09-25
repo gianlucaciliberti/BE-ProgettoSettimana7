@@ -7,29 +7,50 @@
   font-size: 1.9rem;
 }
 
-.hero-catalogo {
+/*
+ * Esce dai vincoli di .main (max-width, padding, velo chiaro) per toccare
+ * i bordi della pagina: qui l'immagine di sfondo del body resta piena,
+ * niente velo. Solo nell'ultimo tratto, in basso, sfuma verso lo stesso
+ * colore del velo di .main, così il passaggio alla griglia sotto è
+ * continuo, senza cuciture — l'"opacità che sale scrollando" viene da lì,
+ * in puro CSS, senza dover legare nulla allo scroll reale.
+ */
+.hero-salone {
   position: relative;
-  border-radius: var(--radius);
-  overflow: hidden;
-  padding: 56px 32px;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-top: -32px;
   margin-bottom: 32px;
-  color: #fff;
-  box-shadow: var(--shadow-lg);
-  background:
-    linear-gradient(180deg, rgba(10, 10, 12, 0.35) 0%, rgba(10, 10, 12, 0.82) 100%),
-    url('../assets/sfondo-showroom.jpg') center 25% / cover no-repeat;
+  min-height: 82vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 55%,
+    rgba(247, 247, 249, 0.95) 100%
+  );
 }
 
-.hero-catalogo h1 {
-  margin: 0 0 8px;
-  font-size: 2.3rem;
+.hero-salone__testo {
+  max-width: 560px;
+  text-align: center;
   color: #fff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
 }
 
-.hero-catalogo p {
+.hero-salone__testo h1 {
+  margin: 0 0 14px;
+  font-size: 3rem;
+}
+
+.hero-salone__testo p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .pagina-sottotitolo {
@@ -75,7 +96,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 32px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .pagina-form h1 {
@@ -167,7 +188,9 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  /* Ombra più marcata delle altre card: qui sotto c'è la foto di sfondo,
+     non solo il grigio chiaro della pagina, serve più distacco. */
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
 }
@@ -338,6 +361,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
+  box-shadow: var(--shadow-md);
 }
 
 .riquadro-soglie__titolo {

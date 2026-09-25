@@ -45,20 +45,18 @@ public class AvvisoPrezzoListener {
     @Value("${app.base-url}")
     private String baseUrl;
 
+    // REQUIRES_NEW: gira dopo il commit originale (ormai chiuso) su un thread
+    // diverso (@Async), quindi non c'è nessuna transazione da "unirsi";
+    // marcaInviatoSeNonGiaFatto è una query di scrittura e ne serve una sua.
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPrezzoCambiato(AutoService.PrezzoAutoCambiatoEvent evento) {
-        log.info("[TEST] Evento ricevuto: auto={} prezzoPrecedente={} prezzoNuovo={}",
-                evento.autoId(), evento.prezzoPrecedente(), evento.prezzoNuovo());
-
         List<Avviso> candidati = avvisoRepository.findNonInviatiByAutoIdConDettagli(evento.autoId());
-        log.info("[TEST] Avvisi non ancora inviati trovati per l'auto: {}", candidati.size());
 
         for (Avviso avviso : candidati) {
             boolean sogliaAttraversata = evento.prezzoPrecedente().compareTo(avviso.getSogliaPrezzo()) > 0
                     && evento.prezzoNuovo().compareTo(avviso.getSogliaPrezzo()) <= 0;
-            log.info("[TEST] Avviso {} soglia={} attraversata={}", avviso.getId(), avviso.getSogliaPrezzo(), sogliaAttraversata);
             if (!sogliaAttraversata) {
                 continue;
             }
@@ -66,14 +64,12 @@ public class AvvisoPrezzoListener {
             // Update atomica: se un'altra esecuzione ha già segnato l'invio,
             // qui il risultato è 0 e non si manda una seconda mail.
             int aggiornate = avvisoRepository.marcaInviatoSeNonGiaFatto(avviso.getId());
-            log.info("[TEST] marcaInviatoSeNonGiaFatto({}) = {}", avviso.getId(), aggiornate);
             if (aggiornate != 1) {
                 continue;
             }
 
             try {
                 inviaMail(avviso, evento.prezzoNuovo());
-                log.info("[TEST] Mail inviata con successo per l'avviso {}", avviso.getId());
             } catch (Exception e) {
                 log.error("Invio mail per l'avviso {} fallito", avviso.getId(), e);
             }

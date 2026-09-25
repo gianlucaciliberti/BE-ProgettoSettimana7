@@ -31,6 +31,14 @@
 
 body {
   margin: 0;
+  /* Sfondo su tutto il sito, nitido (nessun velo qui): chi la stempera è
+     .main, che copre il contenuto normale di ogni pagina. Così in cima al
+     catalogo, dove il contenuto esce da .main apposta, resta piena. */
+  background-image: url('./assets/sfondo-showroom.jpg');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 h1, h2, h3 {

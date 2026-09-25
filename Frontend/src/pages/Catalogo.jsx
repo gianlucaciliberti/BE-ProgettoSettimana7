@@ -33,15 +33,20 @@ export function Catalogo() {
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="hero-catalogo"
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="hero-salone"
       >
-        <h1>Trova la tua prossima auto</h1>
-        <p>Le auto disponibili in questo momento nel nostro salone.</p>
-      </motion.div>
+        <div className="hero-salone__testo">
+          <h1>Salone Auto</h1>
+          <p>
+            Un piccolo salone, auto scelte una per una. Sfoglia il catalogo, salva quelle che ti piacciono e
+            fissa una soglia di prezzo: ti avvisiamo noi quando scende.
+          </p>
+        </div>
+      </motion.section>
 
       {errore && <p className="form__errore">{errore}</p>}
       {caricamento && <p className="testo-muto">Caricamento…</p>}
