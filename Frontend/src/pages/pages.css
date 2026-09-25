@@ -56,3 +56,97 @@
 .banner p {
   margin: 0 0 8px;
 }
+
+/* Catalogo */
+
+.filtri {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtri input[type='search'] {
+  flex: 1;
+  min-width: 220px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.filtri select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.griglia-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.auto-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auto-card h3 {
+  margin: 0;
+}
+
+.auto-card__descrizione {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.auto-card__prezzo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.auto-card__azioni {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.paginazione {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* Dettaglio auto */
+
+.dettaglio-auto {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.dettaglio-auto__prezzo {
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.link-indietro {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 0;
+  margin-bottom: 16px;
+}

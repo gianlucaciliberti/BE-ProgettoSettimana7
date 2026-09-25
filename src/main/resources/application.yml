@@ -41,6 +41,12 @@ management:
   endpoint:
     health:
       show-details: never
+  health:
+    mail:
+      # Se Gmail non risponde o le credenziali non sono ancora impostate,
+      # non deve essere /actuator/health a dirlo: l'app è comunque su, il
+      # deploy non deve pensare che vada riavviata per questo.
+      enabled: false
 
 app:
   base-url: ${APP_BASE_URL:http://localhost:8080}
