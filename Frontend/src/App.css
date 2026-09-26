@@ -10,10 +10,9 @@
   max-width: 1080px;
   margin: 0 auto;
   padding: 32px 20px 64px;
-  /* Velo chiaro sul contenuto normale di ogni pagina (form, card, ecc.):
-     l'immagine di sfondo del body resta piena solo dove qualcosa esce
-     apposta da questo contenitore, come l'hero del catalogo. */
-  background: rgba(247, 247, 249, 0.95);
+  /* Niente sfondo qui: l'immagine del body resta visibile su tutta la
+     pagina (anche intorno/sotto l'hero). A leggersi sopra ci pensa ogni
+     card/pannello con il proprio sfondo, non un velo su tutto il blocco. */
   position: relative;
 }
 

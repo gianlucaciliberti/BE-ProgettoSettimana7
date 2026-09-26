@@ -1,5 +1,10 @@
 .pagina-intestazione {
   margin-bottom: 28px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 20px 24px;
 }
 
 .pagina-intestazione h1 {
@@ -7,14 +12,8 @@
   font-size: 1.9rem;
 }
 
-/*
- * Esce dai vincoli di .main (max-width, padding, velo chiaro) per toccare
- * i bordi della pagina: qui l'immagine di sfondo del body resta piena,
- * niente velo. Solo nell'ultimo tratto, in basso, sfuma verso lo stesso
- * colore del velo di .main, così il passaggio alla griglia sotto è
- * continuo, senza cuciture — l'"opacità che sale scrollando" viene da lì,
- * in puro CSS, senza dover legare nulla allo scroll reale.
- */
+/* Esce dai vincoli di .main (max-width, padding) per toccare i bordi
+   della pagina: l'immagine di sfondo resta piena, senza nessun velo. */
 .hero-salone {
   position: relative;
   left: 50%;
@@ -27,12 +26,6 @@
   align-items: center;
   justify-content: center;
   padding: 32px;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    transparent 55%,
-    rgba(247, 247, 249, 0.95) 100%
-  );
 }
 
 .hero-salone__testo {
@@ -51,6 +44,17 @@
   margin: 0;
   font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.92);
+}
+
+.titolo-sezione {
+  display: inline-block;
+  margin: 0 0 20px;
+  font-size: 1.3rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 12px 20px;
 }
 
 .pagina-sottotitolo {
@@ -96,7 +100,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 32px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .pagina-form h1 {
@@ -190,7 +194,7 @@
   overflow: hidden;
   /* Ombra più marcata delle altre card: qui sotto c'è la foto di sfondo,
      non solo il grigio chiaro della pagina, serve più distacco. */
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
 }
@@ -335,6 +339,15 @@
   opacity: 1;
 }
 
+.dettaglio-auto__info {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  align-self: start;
+}
+
 .dettaglio-auto__info h1 {
   margin: 0 0 6px;
 }
@@ -361,7 +374,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .riquadro-soglie__titolo {

@@ -48,6 +48,8 @@ export function Catalogo() {
         </div>
       </motion.section>
 
+      <h2 className="titolo-sezione">Le auto disponibili per l'acquisto.</h2>
+
       {errore && <p className="form__errore">{errore}</p>}
       {caricamento && <p className="testo-muto">Caricamento…</p>}
       {!caricamento && risultati?.content.length === 0 && (
